@@ -1,0 +1,75 @@
+import java.util.*;
+
+class Graph {
+    private Map<String, Map<String, Integer>> graph;
+
+    public Graph() {
+        graph = new HashMap<>();
+    }
+
+    public void addEdge(String source, String destination, int weight) {
+        graph.putIfAbsent(source, new HashMap<>());
+        graph.putIfAbsent(destination, new HashMap<>());
+        graph.get(source).put(destination, weight);
+        graph.get(destination).put(source, weight); // assuming bidirectional
+    }
+
+    public List<String> shortestPath(String start, String end) {
+        if (!graph.containsKey(start) || !graph.containsKey(end)) {
+            return new ArrayList<>();
+        }
+
+        Map<String, Integer> distances = new HashMap<>();
+        Map<String, String> previous = new HashMap<>();
+        PriorityQueue<String> queue = new PriorityQueue<>(Comparator.comparingInt(distances::get));
+
+        for (String vertex : graph.keySet()) {
+            if (vertex.equals(start)) {
+                distances.put(vertex, 0);
+            } else {
+                distances.put(vertex, Integer.MAX_VALUE);
+            }
+            previous.put(vertex, null);
+            queue.add(vertex);
+        }
+
+        while (!queue.isEmpty()) {
+            String current = queue.poll();
+            for (Map.Entry<String, Integer> neighbor : graph.get(current).entrySet()) {
+                int alt = distances.get(current) + neighbor.getValue();
+                if (alt < distances.get(neighbor.getKey())) {
+                    distances.put(neighbor.getKey(), alt);
+                    previous.put(neighbor.getKey(), current);
+                }
+            }
+        }
+
+        List<String> path = new ArrayList<>();
+        String current = end;
+        while (current != null) {
+            path.add(current);
+            current = previous.get(current);
+        }
+        Collections.reverse(path);
+
+        return path;
+    }
+}
+
+public class RouteOptimizationSystem {
+    public static void main(String[] args) {
+        Graph graph = new Graph();
+        graph.addEdge("A", "B", 4);
+        graph.addEdge("A", "C", 2);
+        graph.addEdge("B", "C", 5);
+        graph.addEdge("B", "D", 10);
+        graph.addEdge("C", "D", 3);
+
+        List<String> path = graph.shortestPath("A", "D");
+        if (path.isEmpty()) {
+            System.out.println("Path not found.");
+        } else {
+            System.out.println("Optimized path: " + String.join(" -> ", path));
+        }
+    }
+}
