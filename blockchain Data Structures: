@@ -1,0 +1,85 @@
+import hashlib
+
+# Merkle Tree implementation
+def merkle_tree(hash_list):
+    if len(hash_list) == 1:
+        return hash_list[0]
+    new_hash_list = []
+    for i in range(0, len(hash_list)-1, 2):
+        combined_hash = hash_list[i] + hash_list[i+1]
+        new_hash = hashlib.sha256(combined_hash.encode()).hexdigest()
+        new_hash_list.append(new_hash)
+    if len(hash_list) % 2 == 1:
+        new_hash_list.append(hash_list[-1])
+    return merkle_tree(new_hash_list)
+
+# Hash Tree implementation
+class TreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+def hash_tree(node):
+    if node is None:
+        return ''
+    hash_value = hashlib.sha256(str(node.data).encode()).hexdigest()
+    if node.left is not None:
+        hash_value += hash_tree(node.left)
+    if node.right is not None:
+        hash_value += hash_tree(node.right)
+    return hash_value
+
+# Patricia Trie implementation
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.value = None
+
+class PatriciaTrie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, key, value):
+        node = self.root
+        while key:
+            if key[0] in node.children:
+                node = node.children[key[0]]
+                key = key[1:]
+            else:
+                new_node = TrieNode()
+                node.children[key[0]] = new_node
+                node = new_node
+                key = key[1:]
+        node.value = value
+
+    def search(self, key):
+        node = self.root
+        while key:
+            if key[0] in node.children:
+                node = node.children[key[0]]
+                key = key[1:]
+            else:
+                return None
+        return node.value
+
+# Example usage
+if __name__ == "__main__":
+    # Merkle Tree
+    hash_list = ['hash1', 'hash2', 'hash3', 'hash4']
+    merkle_root = merkle_tree(hash_list)
+    print("Merkle Root:", merkle_root)
+
+    # Hash Tree
+    root = TreeNode('data')
+    root.left = TreeNode('left_data')
+    root.right = TreeNode('right_data')
+    tree_hash = hash_tree(root)
+    print("Hash Tree:", tree_hash)
+
+    # Patricia Trie
+    trie = PatriciaTrie()
+    trie.insert('key1', 'value1')
+    trie.insert('key2', 'value2')
+    result = trie.search('key1')
+    print("Search Result:", result)
