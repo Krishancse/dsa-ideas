@@ -1,0 +1,78 @@
+import java.util.*;
+
+class Question {
+    private final String question;
+    private final List<String> options;
+    private final String answer;
+
+    public Question(String question, List<String> options, String answer) {
+        this.question = question;
+        this.options = options;
+        this.answer = answer;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public List<String> getOptions() {
+        return options;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+}
+
+class Quiz {
+    private final List<Question> questions;
+
+    public Quiz() {
+        this.questions = new ArrayList<>();
+    }
+
+    public void addQuestion(Question question) {
+        questions.add(question);
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+}
+
+public class OnlineQuizApplication {
+    public static void main(String[] args) {
+        Question question1 = new Question("What is the capital of France?",
+                Arrays.asList("London", "Paris", "Berlin", "Madrid"), "Paris");
+        Question question2 = new Question("Which is the largest mammal?",
+                Arrays.asList("Elephant", "Blue whale", "Giraffe", "Lion"), "Blue whale");
+
+        Quiz quiz = new Quiz();
+        quiz.addQuestion(question1);
+        quiz.addQuestion(question2);
+
+        // Display Questions
+        List<Question> questions = quiz.getQuestions();
+        for (int i = 0; i < questions.size(); i++) {
+            Question q = questions.get(i);
+            System.out.println("Question " + (i + 1) + ": " + q.getQuestion());
+            System.out.println("Options: " + q.getOptions());
+        }
+
+        // Simulating user answers for grading
+        Map<Question, String> userAnswers = new HashMap<>();
+        userAnswers.put(question1, "Paris");
+        userAnswers.put(question2, "Elephant");
+
+        // Grading the quiz
+        int score = 0;
+        for (Map.Entry<Question, String> entry : userAnswers.entrySet()) {
+            Question question = entry.getKey();
+            String userAnswer = entry.getValue();
+            if (userAnswer.equals(question.getAnswer())) {
+                score++;
+            }
+        }
+        System.out.println("Your score: " + score + "/" + questions.size());
+    }
+}
