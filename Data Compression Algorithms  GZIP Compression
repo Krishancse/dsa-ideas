@@ -1,0 +1,76 @@
+
+
+```java
+import java.io.*;
+import java.util.zip.GZIPOutputStream;
+
+public class GZIPCompression {
+
+    public static void compressFile(String sourceFile, String compressedFile) {
+        try {
+            FileInputStream fis = new FileInputStream(sourceFile);
+            FileOutputStream fos = new FileOutputStream(compressedFile);
+            GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) > 0) {
+                gzipOS.write(buffer, 0, len);
+            }
+            gzipOS.close();
+            fos.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+2. **LZ4 Compression:**
+
+```java
+import net.jpountz.lz4.LZ4Compressor;
+import net.jpountz.lz4.LZ4Factory;
+
+public class LZ4Compression {
+
+    public static byte[] compressData(byte[] data) {
+        LZ4Factory factory = LZ4Factory.fastestInstance();
+        LZ4Compressor compressor = factory.fastCompressor();
+        int maxCompressedLength = compressor.maxCompressedLength(data.length);
+        byte[] compressedData = new byte[maxCompressedLength];
+        int compressedLength = compressor.compress(data, 0, data.length, compressedData, 0, maxCompressedLength);
+        return compressedData;
+    }
+}
+```
+
+3. **BZIP2 Compression:**
+
+```java
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import java.io.*;
+
+public class BZIP2Compression {
+
+    public static void compressFile(String sourceFile, String compressedFile) {
+        try {
+            FileInputStream fis = new FileInputStream(sourceFile);
+            FileOutputStream fos = new FileOutputStream(compressedFile);
+            BZip2CompressorOutputStream bzip2OS = new BZip2CompressorOutputStream(fos);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fis.read(buffer)) > 0) {
+                bzip2OS.write(buffer, 0, len);
+            }
+            bzip2OS.close();
+            fos.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+These examples illustrate the implementation of various data compression algorithms in Java, including GZIP, LZ4, and BZIP2. Make sure to include the required libraries and imports in your Java project before running the code.
