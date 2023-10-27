@@ -1,0 +1,24 @@
+from multiprocessing import Pool
+
+def mapper_function(item):
+    # Your mapping logic goes here
+    return (item, 1)
+
+def reducer_function(item):
+    key, values = item
+    # Your reducing logic goes here
+    return (key, sum(values))
+
+def map_reduce(data, mapper, reducer, num_workers=4):
+    with Pool(num_workers) as pool:
+        mapped_data = pool.map(mapper, data)
+        grouped_data = {}
+        for key, value in mapped_data:
+            grouped_data.setdefault(key, []).append(value)
+        reduced_data = pool.map(reducer, grouped_data.items())
+        return reduced_data
+
+# Example usage of the MapReduce algorithm
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+result = map_reduce(data, mapper_function, reducer_function)
+print(result)
