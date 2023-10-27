@@ -1,0 +1,65 @@
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class QuadTree:
+    def __init__(self, boundary, capacity):
+        self.boundary = boundary
+        self.capacity = capacity
+        self.points = []
+        self.divided = False
+
+    def insert(self, point):
+        if not self.boundary.contains(point):
+            return False
+        if len(self.points) < self.capacity:
+            self.points.append(point)
+            return True
+        if not self.divided:
+            self.subdivide()
+        if self.northeast.insert(point):
+            return True
+        if self.northwest.insert(point):
+            return True
+        if self.southeast.insert(point):
+            return True
+        if self.southwest.insert(point):
+            return True
+
+    def subdivide(self):
+        x = self.boundary.x
+        y = self.boundary.y
+        w = self.boundary.w / 2
+        h = self.boundary.h / 2
+
+        ne = Rectangle(x + w, y - h, w, h)
+        self.northeast = QuadTree(ne, self.capacity)
+
+        nw = Rectangle(x - w, y - h, w, h)
+        self.northwest = QuadTree(nw, self.capacity)
+
+        se = Rectangle(x + w, y + h, w, h)
+        self.southeast = QuadTree(se, self.capacity)
+
+        sw = Rectangle(x - w, y + h, w, h)
+        self.southwest = QuadTree(sw, self.capacity)
+        self.divided = True
+
+class Rectangle:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+    def contains(self, point):
+        return (point.x >= self.x - self.w and point.x <= self.x + self.w and 
+                point.y >= self.y - self.h and point.y <= self.y + self.h)
+
+# Example usage of Quadtree for GIS
+boundary = Rectangle(400, 400, 400, 400)
+quadtree = QuadTree(boundary, 4)
+points = [Point(300, 300), Point(350, 350), Point(375, 375), Point(410, 410)]
+for point in points:
+    quadtree.insert(point)
