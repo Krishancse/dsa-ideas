@@ -1,0 +1,73 @@
+import java.util.*;
+
+class Patient {
+    private String name;
+    private int age;
+    private String condition;
+
+    public Patient(String name, int age, String condition) {
+        this.name = name;
+        this.age = age;
+        this.condition = condition;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+}
+
+class HealthcareManagementSystem {
+    private List<Patient> patients;
+
+    public HealthcareManagementSystem() {
+        patients = new ArrayList<>();
+    }
+
+    public void addPatient(Patient patient) {
+        patients.add(patient);
+    }
+
+    public void displayPatients() {
+        System.out.println("List of Patients:");
+        for (int i = 0; i < patients.size(); i++) {
+            Patient patient = patients.get(i);
+            System.out.println("Patient " + (i + 1) + ":");
+            System.out.println("Name: " + patient.getName());
+            System.out.println("Age: " + patient.getAge());
+            System.out.println("Condition: " + patient.getCondition());
+            System.out.println("------------");
+        }
+    }
+}
+
+public class HealthcareManagementSystemDemo {
+    public static void main(String[] args) {
+        HealthcareManagementSystem healthcareSystem = new HealthcareManagementSystem();
+        Scanner scanner = new Scanner(System.in);
+
+        // Input patient details
+        System.out.println("Enter patient details:");
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Age: ");
+        int age = scanner.nextInt();
+        scanner.nextLine(); // Consume the new line character
+        System.out.print("Condition: ");
+        String condition = scanner.nextLine();
+
+        // Create a new patient and add it to the system
+        Patient newPatient = new Patient(name, age, condition);
+        healthcareSystem.addPatient(newPatient);
+
+        // Display all patients in the system
+        healthcareSystem.displayPatients();
+    }
+}
