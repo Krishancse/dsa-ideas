@@ -1,0 +1,63 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class WebCrawler {
+
+    private final Set<String> visitedUrls;
+    private final String baseUrl;
+    private final Pattern pattern;
+
+    public WebCrawler(String baseUrl) {
+        this.baseUrl = baseUrl;
+        this.visitedUrls = new HashSet<>();
+        this.pattern = Pattern.compile("<a\\s*?href=\"(.*?)\"", Pattern.CASE_INSENSITIVE);
+    }
+
+    public void startCrawling() throws IOException {
+        crawl(baseUrl);
+    }
+
+    private void crawl(String url) throws IOException {
+        if (!visitedUrls.contains(url)) {
+            System.out.println("Crawling: " + url);
+            visitedUrls.add(url);
+
+            URL website = new URL(url);
+            BufferedReader in = new BufferedReader(new InputStreamReader(website.openStream()));
+
+            String inputLine;
+            StringBuilder content = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+
+            Matcher matcher = pattern.matcher(content.toString());
+            while (matcher.find()) {
+                String link = matcher.group(1);
+                if (!link.startsWith("http")) {
+                    link = baseUrl + link;
+                }
+                if (link.startsWith(baseUrl)) {
+                    crawl(link);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        String baseUrl = "https://example.com"; // Replace with the desired base URL
+        WebCrawler webCrawler = new WebCrawler(baseUrl);
+        try {
+            webCrawler.startCrawling();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
