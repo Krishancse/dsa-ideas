@@ -1,0 +1,31 @@
+import java.util.Arrays;
+
+public class GameStrategyOptimization {
+
+    public static void main(String[] args) {
+        int[] gains = {3, 6, 2, 9}; // Example gains for different strategies
+
+        int optimalGain = optimizeStrategy(gains);
+        System.out.println("Optimal Gain: " + optimalGain);
+    }
+
+    private static int optimizeStrategy(int[] gains) {
+        int n = gains.length;
+        int[][] dp = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = gains[i];
+        }
+
+        for (int len = 2; len <= n; len++) {
+            for (int i = 0; i < n - len + 1; i++) {
+                int j = i + len - 1;
+                int turn = n - len;
+                dp[i][j] = Math.max(gains[i] + Math.min(dp[i + 2][j], dp[i + 1][j - 1]),
+                        gains[j] + Math.min(dp[i + 1][j - 1], dp[i][j - 2]));
+            }
+        }
+
+        return dp[0][n - 1];
+    }
+}
