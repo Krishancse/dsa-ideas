@@ -1,0 +1,67 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Bank {
+    private Map<String, Double> accounts;
+    private Map<String, String> credentials;
+
+    public Bank() {
+        accounts = new HashMap<>();
+        credentials = new HashMap<>();
+    }
+
+    public void createAccount(String username, String password, double initialBalance) {
+        if (!credentials.containsKey(username)) {
+            credentials.put(username, password);
+            accounts.put(username, initialBalance);
+            System.out.println("Account created successfully for " + username);
+        } else {
+            System.out.println("Username already exists. Please choose a different username.");
+        }
+    }
+
+    public void deposit(String username, double amount) {
+        if (accounts.containsKey(username)) {
+            double balance = accounts.get(username);
+            accounts.put(username, balance + amount);
+            System.out.println("Deposit of $" + amount + " successful. New balance for " + username + ": $" + accounts.get(username));
+        } else {
+            System.out.println("Account not found.");
+        }
+    }
+
+    public void withdraw(String username, double amount) {
+        if (accounts.containsKey(username)) {
+            double balance = accounts.get(username);
+            if (balance >= amount) {
+                accounts.put(username, balance - amount);
+                System.out.println("Withdrawal of $" + amount + " successful. New balance for " + username + ": $" + accounts.get(username));
+            } else {
+                System.out.println("Insufficient funds.");
+            }
+        } else {
+            System.out.println("Account not found.");
+        }
+    }
+
+    public double checkBalance(String username) {
+        if (accounts.containsKey(username)) {
+            return accounts.get(username);
+        } else {
+            System.out.println("Account not found.");
+            return 0;
+        }
+    }
+}
+
+public class BankingSystem {
+    public static void main(String[] args) {
+        Bank bank = new Bank();
+        bank.createAccount("user1", "password1", 1000.0);
+        bank.deposit("user1", 500.0);
+        bank.withdraw("user1", 200.0);
+
+        double balance = bank.checkBalance("user1");
+        System.out.println("Current balance for user1: $" + balance);
+    }
+}
