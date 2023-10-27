@@ -1,0 +1,44 @@
+import org.python.util.PythonInterpreter;
+import org.python.core.PyObject;
+
+import java.util.Scanner;
+
+public class NLPWithSentimentAnalysis {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter text for sentiment analysis:");
+        String text = scanner.nextLine();
+
+        System.out.println("Performing sentiment analysis...");
+
+        // Perform sentiment analysis using Python NLTK library
+        double sentimentScore = performSentimentAnalysis(text);
+
+        if (sentimentScore > 0.5) {
+            System.out.println("Positive Sentiment");
+        } else if (sentimentScore < 0.5) {
+            System.out.println("Negative Sentiment");
+        } else {
+            System.out.println("Neutral Sentiment");
+        }
+
+        scanner.close();
+    }
+
+    // Method to execute Python code for sentiment analysis
+    private static double performSentimentAnalysis(String text) {
+        PythonInterpreter interpreter = new PythonInterpreter();
+        interpreter.exec("import sys");
+        interpreter.exec("sys.path.append('path_to_your_python_file')"); // Path to your Python file
+
+        // Run your Python script for sentiment analysis
+        interpreter.exec("from your_python_script import perform_sentiment_analysis");
+        PyObject sentimentAnalysisFunction = interpreter.get("perform_sentiment_analysis");
+
+        PyObject result = sentimentAnalysisFunction.__call__(text);
+
+        return (double) result.__tojava__(Double.class);
+    }
+}
