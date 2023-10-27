@@ -1,0 +1,50 @@
+import java.util.*;
+
+class DependencyResolver {
+    private Map<String, List<String>> dependencies;
+
+    public DependencyResolver() {
+        this.dependencies = new HashMap<>();
+    }
+
+    public void addDependency(String component, List<String> dependentComponents) {
+        dependencies.put(component, dependentComponents);
+    }
+
+    public List<String> resolveDependencies(String component) {
+        Set<String> resolved = new HashSet<>();
+        List<String> result = new ArrayList<>();
+        resolve(component, resolved, result);
+        return result;
+    }
+
+    private void resolve(String component, Set<String> resolved, List<String> result) {
+        if (!resolved.contains(component)) {
+            resolved.add(component);
+            List<String> dependents = dependencies.getOrDefault(component, new ArrayList<>());
+            for (String dependent : dependents) {
+                resolve(dependent, resolved, result);
+            }
+            result.add(component);
+        }
+    }
+}
+
+public class DependencyResolutionSystem {
+    public static void main(String[] args) {
+        DependencyResolver resolver = new DependencyResolver();
+
+        List<String> componentA = new ArrayList<>(Arrays.asList("componentB", "componentC"));
+        List<String> componentB = new ArrayList<>(Collections.singletonList("componentD"));
+        List<String> componentC = new ArrayList<>(Collections.singletonList("componentD"));
+        List<String> componentD = new ArrayList<>();
+
+        resolver.addDependency("componentA", componentA);
+        resolver.addDependency("componentB", componentB);
+        resolver.addDependency("componentC", componentC);
+        resolver.addDependency("componentD", componentD);
+
+        List<String> resolvedDependencies = resolver.resolveDependencies("componentA");
+        System.out.println("Resolved Dependencies for componentA: " + resolvedDependencies);
+    }
+}
