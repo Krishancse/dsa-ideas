@@ -1,0 +1,103 @@
+import java.util.*;
+
+class Node {
+    private final String name;
+    private final Map<Node, Integer> neighbors;
+
+    public Node(String name) {
+        this.name = name;
+        this.neighbors = new HashMap<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void addNeighbor(Node node, int distance) {
+        neighbors.put(node, distance);
+    }
+
+    public Map<Node, Integer> getNeighbors() {
+        return neighbors;
+    }
+}
+
+class Network {
+    private final Map<String, Node> nodes;
+
+    public Network() {
+        this.nodes = new HashMap<>();
+    }
+
+    public void addNode(Node node) {
+        nodes.put(node.getName(), node);
+    }
+
+    public List<Node> findOptimalPath(Node source, Node destination) {
+        Map<Node, Integer> distance = new HashMap<>();
+        Map<Node, Node> previous = new HashMap<>();
+        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(distance::get));
+
+        for (Node node : nodes.values()) {
+            if (node == source) {
+                distance.put(node, 0);
+            } else {
+                distance.put(node, Integer.MAX_VALUE);
+            }
+            previous.put(node, null);
+            queue.add(node);
+        }
+
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+            if (current == destination) {
+                break;
+            }
+
+            for (Map.Entry<Node, Integer> entry : current.getNeighbors().entrySet()) {
+                Node neighbor = entry.getKey();
+                int alt = distance.get(current) + entry.getValue();
+                if (alt < distance.get(neighbor)) {
+                    distance.put(neighbor, alt);
+                    previous.put(neighbor, current);
+                    queue.remove(neighbor);
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        List<Node> path = new ArrayList<>();
+        for (Node node = destination; node != null; node = previous.get(node)) {
+            path.add(node);
+        }
+        Collections.reverse(path);
+        return path;
+    }
+}
+
+public class OptimalRouting {
+
+    public static void main(String[] args) {
+        Node nodeA = new Node("A");
+        Node nodeB = new Node("B");
+        Node nodeC = new Node("C");
+        Node nodeD = new Node("D");
+
+        nodeA.addNeighbor(nodeB, 4);
+        nodeA.addNeighbor(nodeC, 2);
+        nodeB.addNeighbor(nodeC, 5);
+        nodeB.addNeighbor(nodeD, 10);
+        nodeC.addNeighbor(nodeD, 3);
+
+        Network network = new Network();
+        network.addNode(nodeA);
+        network.addNode(nodeB);
+        network.addNode(nodeC);
+        network.addNode(nodeD);
+
+        Node source = nodeA;
+        Node destination = nodeD;
+        List<Node> optimalPath = network.findOptimalPath(source, destination);
+        System.out.println("Optimal Path from " + source.getName() + " to " + destination.getName() + ": " + optimalPath.stream().map(Node::getName).collect(java.util.stream.Collectors.joining(" -> ")));
+    }
+}
