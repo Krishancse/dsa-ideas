@@ -1,41 +1,33 @@
-class RecommendationSystem:
-    def __init__(self, data):
-        self.data = data
+import numpy as np
 
-    def collaborative_filtering(self, user_item_matrix):
-        # Implement collaborative filtering algorithm here
-        pass
+# Sample data for the recommendation system
+user_item_matrix = np.array([[5, 3, 0, 1],
+                               [4, 0, 0, 1],
+                               [1, 1, 0, 5],
+                               [1, 0, 0, 4],
+                               [0, 1, 5, 4]])
 
-    def matrix_factorization_SVD(self, user_item_matrix, k=2):
-        # Implement matrix factorization with SVD here
-        pass
+# Create a recommendation system object
+recommendation_system = RecommendationSystem(user_item_matrix)
 
-    def nearest_neighbor(self, X, test_point, k=2):
-        # Implement K-Nearest Neighbors algorithm here
-        pass
+# Get recommendations using collaborative filtering
+collaborative_result = recommendation_system.collaborative_filtering(user_item_matrix)
 
-# Example usage of the RecommendationSystem class
-if __name__ == "__main__":
-    import numpy as np
+# Get recommendations using matrix factorization with SVD
+svd_result = recommendation_system.matrix_factorization_SVD(user_item_matrix, k=2)
 
-    # Sample data for the recommendation system
-    user_item_matrix = np.array([[5, 3, 0, 1],
-                                 [4, 0, 0, 1],
-                                 [1, 1, 0, 5],
-                                 [1, 0, 0, 4],
-                                 [0, 1, 5, 4]])
+# Get recommendations using K-Nearest Neighbors
+X = np.array([[1, 2], [1, 4], [1, 0], [4, 2], [4, 4], [4, 0]])
+test_point = np.array([3, 3])
+nearest_neighbor_result = recommendation_system.nearest_neighbor(X, test_point, k=2)
 
-    recommendation_system = RecommendationSystem(user_item_matrix)
-    collaborative_result = recommendation_system.collaborative_filtering(user_item_matrix)
-    print("Collaborative Filtering Result:")
-    print(collaborative_result)
+# Print the results
+print("Collaborative Filtering Result:")
+print(collaborative_result)
 
-    svd_result = recommendation_system.matrix_factorization_SVD(user_item_matrix, k=2)
-    print("\nMatrix Factorization with SVD Result:")
-    print(svd_result)
+print("\nMatrix Factorization with SVD Result:")
+print(svd_result)
 
-    X = np.array([[1, 2], [1, 4], [1, 0], [4, 2], [4, 4], [4, 0]])
-    test_point = np.array([3, 3])
-    nearest_neighbor_result = recommendation_system.nearest_neighbor(X, test_point, k=2)
-    print("\nNearest Neighbor Result:")
-    print(nearest_neighbor_result)
+print("\nNearest Neighbor Result:")
+print(nearest_neighbor_result)
+
