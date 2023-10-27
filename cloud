@@ -1,0 +1,82 @@
+import java.util.*;
+
+class CloudResource {
+    private String resourceName;
+    private int capacity;
+    private boolean allocated;
+
+    public CloudResource(String resourceName, int capacity) {
+        this.resourceName = resourceName;
+        this.capacity = capacity;
+        this.allocated = false;
+    }
+
+    public String getResourceName() {
+        return this.resourceName;
+    }
+
+    public int getCapacity() {
+        return this.capacity;
+    }
+
+    public boolean isAllocated() {
+        return this.allocated;
+    }
+
+    public void allocate() {
+        this.allocated = true;
+    }
+
+    public void deallocate() {
+        this.allocated = false;
+    }
+}
+
+class ResourceAllocator {
+    private List<CloudResource> resources;
+
+    public ResourceAllocator() {
+        this.resources = new ArrayList<>();
+    }
+
+    public void addResource(CloudResource resource) {
+        this.resources.add(resource);
+    }
+
+    public CloudResource allocateResource(int requiredCapacity) {
+        for (CloudResource resource : resources) {
+            if (!resource.isAllocated() && resource.getCapacity() >= requiredCapacity) {
+                resource.allocate();
+                return resource;
+            }
+        }
+        return null; // No available resource found
+    }
+
+    public void deallocateResource(CloudResource resource) {
+        resource.deallocate();
+    }
+}
+
+public class CloudResourceAllocation {
+
+    public static void main(String[] args) {
+        ResourceAllocator allocator = new ResourceAllocator();
+        CloudResource resource1 = new CloudResource("Resource1", 4);
+        CloudResource resource2 = new CloudResource("Resource2", 2);
+        CloudResource resource3 = new CloudResource("Resource3", 8);
+
+        allocator.addResource(resource1);
+        allocator.addResource(resource2);
+        allocator.addResource(resource3);
+
+        int requiredCapacity = 5;
+        CloudResource allocatedResource = allocator.allocateResource(requiredCapacity);
+
+        if (allocatedResource != null) {
+            System.out.println("Resource allocated: " + allocatedResource.getResourceName());
+        } else {
+            System.out.println("No available resource found for the required capacity.");
+        }
+    }
+}
