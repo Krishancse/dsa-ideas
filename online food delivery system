@@ -1,0 +1,111 @@
+import java.util.*;
+
+class MenuItem {
+    private String name;
+    private double price;
+
+    public MenuItem(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+}
+
+class Order {
+    private List<MenuItem> items;
+
+    public Order() {
+        items = new ArrayList<>();
+    }
+
+    public void addItem(MenuItem item) {
+        items.add(item);
+    }
+
+    public List<MenuItem> getItems() {
+        return items;
+    }
+
+    public double getTotalPrice() {
+        double total = 0;
+        for (MenuItem item : items) {
+            total += item.getPrice();
+        }
+        return total;
+    }
+}
+
+class OnlineFoodDeliverySystem {
+    private Map<String, List<MenuItem>> menu;
+    private Map<String, Order> orders;
+
+    public OnlineFoodDeliverySystem() {
+        menu = new HashMap<>();
+        orders = new HashMap<>();
+    }
+
+    public void addToMenu(String restaurant, MenuItem item) {
+        if (!menu.containsKey(restaurant)) {
+            menu.put(restaurant, new ArrayList<>());
+        }
+        menu.get(restaurant).add(item);
+    }
+
+    public List<MenuItem> getMenuItems(String restaurant) {
+        return menu.getOrDefault(restaurant, new ArrayList<>());
+    }
+
+    public void placeOrder(String user, Order order) {
+        orders.put(user, order);
+        System.out.println("Order placed successfully for " + user);
+    }
+
+    public void displayOrder(String user) {
+        Order order = orders.get(user);
+        if (order != null) {
+            System.out.println("Order for " + user + ":");
+            for (MenuItem item : order.getItems()) {
+                System.out.println(item.getName() + " - $" + item.getPrice());
+            }
+            System.out.println("Total: $" + order.getTotalPrice());
+        } else {
+            System.out.println("No order found for " + user);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Creating an instance of the OnlineFoodDeliverySystem
+        OnlineFoodDeliverySystem foodDeliverySystem = new OnlineFoodDeliverySystem();
+
+        // Adding items to the menu
+        MenuItem pizza = new MenuItem("Margherita Pizza", 12.99);
+        MenuItem pasta = new MenuItem("Spaghetti Carbonara", 10.99);
+
+        foodDeliverySystem.addToMenu("Italian Cuisine", pizza);
+        foodDeliverySystem.addToMenu("Italian Cuisine", pasta);
+
+        // Placing orders
+        Order order1 = new Order();
+        order1.addItem(pizza);
+
+        Order order2 = new Order();
+        order2.addItem(pizza);
+        order2.addItem(pasta);
+
+        foodDeliverySystem.placeOrder("User1", order1);
+        foodDeliverySystem.placeOrder("User2", order2);
+
+        // Displaying orders
+        foodDeliverySystem.displayOrder("User1");
+        foodDeliverySystem.displayOrder("User2");
+    }
+}
