@@ -1,0 +1,66 @@
+import java.util.*;
+
+public class ShortestPathFinder {
+
+    static class Point {
+        int x;
+        int y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    public static int shortestPath(char[][] grid, Point start, Point end) {
+        int rows = grid.length;
+        int cols = grid[0].length;
+        int[] dx = {1, 0, -1, 0};
+        int[] dy = {0, 1, 0, -1};
+        boolean[][] visited = new boolean[rows][cols];
+        Queue<Point> queue = new LinkedList<>();
+        queue.add(start);
+        visited[start.x][start.y] = true;
+        int steps = 0;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Point current = queue.poll();
+                if (current.x == end.x && current.y == end.y) {
+                    return steps;
+                }
+                for (int j = 0; j < 4; j++) {
+                    int nextX = current.x + dx[j];
+                    int nextY = current.y + dy[j];
+                    if (nextX >= 0 && nextX < rows && nextY >= 0 && nextY < cols
+                            && grid[nextX][nextY] != '#' && !visited[nextX][nextY]) {
+                        queue.add(new Point(nextX, nextY));
+                        visited[nextX][nextY] = true;
+                    }
+                }
+            }
+            steps++;
+        }
+        return -1; // If there's no path from start to end
+    }
+
+    public static void main(String[] args) {
+        char[][] grid = {
+                {'S', '.', '.', '.'},
+                {'.', '#', '.', '#'},
+                {'.', '.', '.', '.'},
+                {'#', '.', '#', 'E'}
+        };
+
+        Point start = new Point(0, 0); // Start point coordinates
+        Point end = new Point(3, 3); // End point coordinates
+
+        int shortestPathLength = shortestPath(grid, start, end);
+        if (shortestPathLength != -1) {
+            System.out.println("Shortest path length from S to E is: " + shortestPathLength);
+        } else {
+            System.out.println("No path from S to E exists!");
+        }
+    }
+}
