@@ -1,0 +1,77 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class InventoryManagementSystem {
+
+    private Map<String, Integer> inventory;
+
+    public InventoryManagementSystem() {
+        this.inventory = new HashMap<>();
+    }
+
+    public void addItem(String itemName, int quantity) {
+        if (inventory.containsKey(itemName)) {
+            inventory.put(itemName, inventory.get(itemName) + quantity);
+        } else {
+            inventory.put(itemName, quantity);
+        }
+        System.out.println(quantity + " " + itemName + "(s) added to inventory.");
+    }
+
+    public void removeItem(String itemName, int quantity) {
+        if (inventory.containsKey(itemName)) {
+            int currentQuantity = inventory.get(itemName);
+            if (currentQuantity >= quantity) {
+                inventory.put(itemName, currentQuantity - quantity);
+                System.out.println(quantity + " " + itemName + "(s) removed from inventory.");
+            } else {
+                System.out.println("Insufficient " + itemName + " in inventory.");
+            }
+        } else {
+            System.out.println(itemName + " not found in inventory.");
+        }
+    }
+
+    public void displayInventory() {
+        System.out.println("Current Inventory:");
+        for (String itemName : inventory.keySet()) {
+            System.out.println(itemName + ": " + inventory.get(itemName));
+        }
+    }
+
+    public static void main(String[] args) {
+        InventoryManagementSystem ims = new InventoryManagementSystem();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("1. Add Item\n2. Remove Item\n3. Display Inventory\n4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter item name: ");
+                    String itemName = scanner.next();
+                    System.out.print("Enter quantity to add: ");
+                    int quantityToAdd = scanner.nextInt();
+                    ims.addItem(itemName, quantityToAdd);
+                    break;
+                case 2:
+                    System.out.print("Enter item name: ");
+                    String itemToRemove = scanner.next();
+                    System.out.print("Enter quantity to remove: ");
+                    int quantityToRemove = scanner.nextInt();
+                    ims.removeItem(itemToRemove, quantityToRemove);
+                    break;
+                case 3:
+                    ims.displayInventory();
+                    break;
+                case 4:
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
