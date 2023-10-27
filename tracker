@@ -1,0 +1,69 @@
+import java.util.*;
+
+class Cryptocurrency {
+    private String name;
+    private double price;
+    private double quantity;
+
+    public Cryptocurrency(String name, double price, double quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public double getValue() {
+        return price * quantity;
+    }
+}
+
+class PortfolioTracker {
+    private Map<String, Cryptocurrency> portfolio;
+
+    public PortfolioTracker() {
+        portfolio = new HashMap<>();
+    }
+
+    public void addCryptocurrency(Cryptocurrency crypto) {
+        portfolio.put(crypto.getName(), crypto);
+    }
+
+    public void displayPortfolio() {
+        System.out.println("Cryptocurrency Portfolio:");
+        for (String name : portfolio.keySet()) {
+            Cryptocurrency crypto = portfolio.get(name);
+            System.out.println("Cryptocurrency: " + crypto.getName());
+            System.out.println("Price: $" + crypto.getPrice());
+            System.out.println("Quantity: " + crypto.getQuantity());
+            System.out.println("Total Value: $" + crypto.getValue());
+            System.out.println("------------");
+        }
+    }
+}
+
+public class CryptocurrencyPortfolioTrackerDemo {
+    public static void main(String[] args) {
+        PortfolioTracker portfolioTracker = new PortfolioTracker();
+
+        // Simulated cryptocurrency data
+        Cryptocurrency bitcoin = new Cryptocurrency("Bitcoin", 60000, 0.5);
+        Cryptocurrency ethereum = new Cryptocurrency("Ethereum", 4000, 2.0);
+
+        portfolioTracker.addCryptocurrency(bitcoin);
+        portfolioTracker.addCryptocurrency(ethereum);
+
+        portfolioTracker.displayPortfolio();
+    }
+}
+
