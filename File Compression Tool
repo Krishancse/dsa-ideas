@@ -1,0 +1,53 @@
+import java.io.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
+public class FileCompressionTool {
+    public static void compressFile(String sourceFile, String compressedFile) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(sourceFile);
+            FileOutputStream fileOutputStream = new FileOutputStream(compressedFile);
+            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = fileInputStream.read(buffer)) > 0) {
+                gzipOutputStream.write(buffer, 0, len);
+            }
+            gzipOutputStream.finish();
+            gzipOutputStream.close();
+            fileOutputStream.close();
+            fileInputStream.close();
+            System.out.println("File compressed successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void decompressFile(String compressedFile, String decompressedFile) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(compressedFile);
+            GZIPInputStream gzipInputStream = new GZIPInputStream(fileInputStream);
+            FileOutputStream fileOutputStream = new FileOutputStream(decompressedFile);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gzipInputStream.read(buffer)) > 0) {
+                fileOutputStream.write(buffer, 0, len);
+            }
+            gzipInputStream.close();
+            fileOutputStream.close();
+            fileInputStream.close();
+            System.out.println("File decompressed successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        String sourceFile = "example.txt";
+        String compressedFile = "example.txt.gz";
+        String decompressedFile = "example_decompressed.txt";
+
+        compressFile(sourceFile, compressedFile);
+        decompressFile(compressedFile, decompressedFile);
+    }
+}
