@@ -1,0 +1,43 @@
+import java.util.Arrays;
+import org.apache.commons.math3.genetics.*;
+import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
+import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunctionGradient;
+import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.NelderMeadSimplex;
+import org.apache.commons.math3.optim.linear.*;
+import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
+import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunctionGradient;
+
+public class SupplyChainOptimization {
+
+    public static void main(String[] args) {
+        // Linear Programming Example
+        LinearObjectiveFunction linearObjectiveFunction = new LinearObjectiveFunction(new double[]{5, 7}, 0);
+        LinearConstraintSet linearConstraintSet = new LinearConstraintSet(
+                new LinearConstraint[]{new LinearConstraint(new double[]{2, 3}, Relationship.LEQ, 8),
+                        new LinearConstraint(new double[]{3, 1}, Relationship.LEQ, 5),
+                        new LinearConstraint(new double[]{1, 0}, Relationship.GEQ, 0)});
+        SimplexSolver simplexSolver = new SimplexSolver();
+        PointValuePair linearSolution = simplexSolver.optimize(new MaxIter(100), linearObjectiveFunction, linearConstraintSet, GoalType.MAXIMIZE, new NonNegativeConstraint(true));
+        System.out.println("Linear Programming Solution:");
+        System.out.println("x: " + linearSolution.getPointRef()[0] + ", y: " + linearSolution.getPointRef()[1]);
+
+        // Genetic Algorithms Example
+        GeneticAlgorithm ga = new GeneticAlgorithm(new OnePointCrossover(0.5), 100, new TournamentSelection(5));
+        MaxKColorFitnessFunction fitnessFunction = new MaxKColorFitnessFunction(graph);
+        // Initialize a random population
+        Population initial = new ElitisticListPopulation(100, 0.9, ga.generateRandomPopulation(100));
+        // Evolve the population for 100 generations
+        Population finalPopulation = ga.evolve(initial, fitnessFunction, new StoppingCondition() {
+            @Override
+            public boolean isSatisfied(Population population) {
+                return ga.getGenerationsEvolved() > 100;
+            }
+        });
+        // Get the best solution
+        Chromosome bestSolution = finalPopulation.getFittestChromosome();
+        System.out.println("Genetic Algorithms Solution:");
+        System.out.println(Arrays.toString(bestSolution.getRepresentation().getGenes()));
+    }
+}
