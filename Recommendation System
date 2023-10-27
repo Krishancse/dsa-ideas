@@ -1,0 +1,53 @@
+import java.util.*;
+
+class RecommendationSystem {
+    private Map<String, Map<String, Double>> userPreferences;
+
+    public RecommendationSystem() {
+        this.userPreferences = new HashMap<>();
+    }
+
+    public void addUser(String user) {
+        userPreferences.put(user, new HashMap<>());
+    }
+
+    public void addPreference(String user, String item, double rating) {
+        if (userPreferences.containsKey(user)) {
+            Map<String, Double> preferences = userPreferences.get(user);
+            preferences.put(item, rating);
+        } else {
+            System.out.println("User not found.");
+        }
+    }
+
+    public List<String> getRecommendations(String user) {
+        if (userPreferences.containsKey(user)) {
+            Map<String, Double> preferences = userPreferences.get(user);
+            List<Map.Entry<String, Double>> sortedPreferences = new ArrayList<>(preferences.entrySet());
+            sortedPreferences.sort((e1, e2) -> Double.compare(e2.getValue(), e1.getValue()));
+
+            List<String> recommendations = new ArrayList<>();
+            for (Map.Entry<String, Double> entry : sortedPreferences) {
+                recommendations.add(entry.getKey());
+            }
+            return recommendations;
+        } else {
+            System.out.println("User not found.");
+            return new ArrayList<>();
+        }
+    }
+}
+
+public class RecommendationSystemDemo {
+    public static void main(String[] args) {
+        RecommendationSystem system = new RecommendationSystem();
+
+        system.addUser("User1");
+        system.addPreference("User1", "Item1", 4.5);
+        system.addPreference("User1", "Item2", 3.2);
+        system.addPreference("User1", "Item3", 4.8);
+
+        List<String> recommendations = system.getRecommendations("User1");
+        System.out.println("Recommendations for User1: " + recommendations);
+    }
+}
