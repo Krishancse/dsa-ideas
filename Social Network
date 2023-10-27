@@ -1,0 +1,119 @@
+import java.util.*;
+
+class SocialNetwork {
+    // A map to store the network where each person is associated with their friends
+    private Map<String, List<String>> network;
+
+    // Constructor to initialize the network
+    public SocialNetwork() {
+        network = new HashMap<>();
+    }
+
+    // Method to add a new person to the network
+    public void addPerson(String name) {
+        if (!network.containsKey(name)) {
+            network.put(name, new ArrayList<>());
+        }
+    }
+
+    // Method to add a friendship between two people
+    public void addFriend(String person1, String person2) {
+        if (network.containsKey(person1) && network.containsKey(person2)) {
+            network.get(person1).add(person2);
+            network.get(person2).add(person1);
+            System.out.println(person1 + " and " + person2 + " are now friends.");
+        } else {
+            System.out.println("One or both persons not found in the network.");
+        }
+    }
+
+    // Method to get the list of friends for a particular person
+    public List<String> getFriends(String name) {
+        if (network.containsKey(name)) {
+            return network.get(name);
+        } else {
+            System.out.println(name + " not found in the network.");
+            return new ArrayList<>();
+        }
+    }
+
+    // Method to display the entire social network with all connections
+    public void displayNetwork() {
+        System.out.println("Social Network:");
+        for (String person : network.keySet()) {
+            System.out.print(person + " is friends with: ");
+            for (String friend : network.get(person)) {
+                System.out.print(friend + ", ");
+            }
+            System.out.println();
+        }
+    }
+
+    // Method to find the path between two people in the network
+    public void findPath(String source, String destination) {
+        Set<String> visited = new HashSet<>();
+        Queue<String> queue = new LinkedList<>();
+        Map<String, String> parentMap = new HashMap<>();
+
+        visited.add(source);
+        queue.add(source);
+
+        boolean pathExists = false;
+
+        while (!queue.isEmpty()) {
+            String current = queue.poll();
+            if (current.equals(destination)) {
+                pathExists = true;
+                break;
+            }
+            for (String friend : network.get(current)) {
+                if (!visited.contains(friend)) {
+                    visited.add(friend);
+                    queue.add(friend);
+                    parentMap.put(friend, current);
+                }
+            }
+        }
+
+        if (pathExists) {
+            List<String> path = new ArrayList<>();
+            String current = destination;
+            while (current != null) {
+                path.add(current);
+                current = parentMap.get(current);
+            }
+            Collections.reverse(path);
+            System.out.println("Path from " + source + " to " + destination + ": " + String.join(" -> ", path));
+        } else {
+            System.out.println("Path does not exist between " + source + " and " + destination);
+        }
+    }
+}
+
+public class SocialNetworkAnalysisTool {
+    public static void main(String[] args) {
+        // Creating an instance of the SocialNetwork class
+        SocialNetwork socialNetwork = new SocialNetwork();
+
+        // Adding people to the network
+        socialNetwork.addPerson("Alice");
+        socialNetwork.addPerson("Bob");
+        socialNetwork.addPerson("Charlie");
+        socialNetwork.addPerson("David");
+
+        // Adding friendships between people
+        socialNetwork.addFriend("Alice", "Bob");
+        socialNetwork.addFriend("Bob", "Charlie");
+        socialNetwork.addFriend("Charlie", "David");
+        socialNetwork.addFriend("Alice", "David");
+
+        // Displaying the entire social network
+        socialNetwork.displayNetwork();
+
+        // Getting the list of friends for a particular person
+        System.out.println("Friends of Alice: " + socialNetwork.getFriends("Alice"));
+
+        // Finding the path between two people in the network
+        socialNetwork.findPath("Alice", "David");
+    }
+}
