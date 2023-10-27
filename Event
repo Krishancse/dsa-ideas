@@ -1,0 +1,56 @@
+import java.util.*;
+
+class Event {
+    private String eventName;
+    private Date eventDate;
+    // Additional fields as needed
+
+    public Event(String eventName, Date eventDate) {
+        this.eventName = eventName;
+        this.eventDate = eventDate;
+    }
+
+    // Getters and setters for the fields
+}
+
+class Calendar {
+    private Map<Date, List<Event>> events;
+
+    public Calendar() {
+        events = new HashMap<>();
+    }
+
+    public void addEvent(Date date, Event event) {
+        if (!events.containsKey(date)) {
+            events.put(date, new ArrayList<>());
+        }
+        events.get(date).add(event);
+    }
+
+    public List<Event> getEvents(Date date) {
+        return events.getOrDefault(date, new ArrayList<>());
+    }
+
+    // Other methods for event management and retrieval
+}
+
+public class SchedulingCalendarApplication {
+    public static void main(String[] args) {
+        Calendar calendar = new Calendar();
+
+        // Add sample events to the calendar
+        Date date1 = new Date();
+        Event event1 = new Event("Meeting 1", date1);
+        calendar.addEvent(date1, event1);
+
+        Date date2 = new Date();
+        Event event2 = new Event("Meeting 2", date2);
+        calendar.addEvent(date2, event2);
+
+        // Get and display events for a specific date
+        List<Event> events = calendar.getEvents(date1);
+        for (Event event : events) {
+            System.out.println("Event: " + event.getEventName() + ", Date: " + event.getEventDate());
+        }
+    }
+}
